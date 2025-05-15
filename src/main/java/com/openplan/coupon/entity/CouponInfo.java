@@ -85,6 +85,7 @@ public class CouponInfo {
     @OneToMany(
         mappedBy = "couponInfo",
         cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<CouponCondition> conditions = new ArrayList<>();
 
     // 양방향 관계 편의 메서드
