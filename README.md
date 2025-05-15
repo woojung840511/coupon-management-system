@@ -61,13 +61,13 @@ API 문서는 Swagger를 통해 확인할 수 있습니다.
 
 #### coupon_info
 - coupon_info_seq: 쿠폰 순번
-- coupon_type: 쿠폰의 사용 유형
+- coupon_type: 쿠폰의 사용 유형 (ONCE, MULTI, LIMIT)
 - coupon_name: 쿠폰의 명칭
-- target_type: B2B, B2C 서비스 대상
-- coupon_publish_type: 쿠폰의 발행 유형
-- purpose_type: 쿠폰의 용도
+- target_type: B2B, B2C 서비스 대상 (B2B, B2C, ALL)
+- coupon_publish_type: 쿠폰의 발행 유형 (UNI, POLY)
+- purpose_type: 쿠폰의 용도 (RATE, AMOUNT)
 - purpose_value: 용도의 값
-- coupon_badge_type: 쿠폰에 붙일 배지 유형
+- coupon_badge_type: 쿠폰에 붙일 배지 유형 (NEW, BEST)
 - coupon_image_url: 쿠폰 이미지 URL
 - press_count: 쿠폰 발행 숫자
 - use_count: 쿠폰 사용 숫자
@@ -135,29 +135,29 @@ API 문서는 Swagger를 통해 확인할 수 있습니다.
 
 ### Enum 명세
 
-#### CouponType
+#### CouponType - 쿠폰 사용 유형
 - ONCE: 1회
 - MULTI: 다회
 - LIMIT: 제한
 
-#### CouponPublishType
+#### CouponPublishType - 쿠폰의 발행 유형
 - UNI: 고정 코드
 - POLY: 임의 코드
 
-#### TargetType
+#### TargetType - 쿠폰 서비스 대상 유형
 - B2B
 - B2C
 - ALL
 
-#### PurposeType
+#### PurposeType - 쿠폰 용도 유형
 - RATE: 할인율
 - AMOUNT: 차감 비용
 
-#### CouponBadgeType
+#### CouponBadgeType - 쿠폰 뱃지 유형
 - NEW
 - BEST
 
-#### ConditionType
+#### ConditionType - 쿠폰 조건 유형
 - MAX_DISCOUNT: 최대 할인 금액
 - MIN_AMOUNT: 최소 사용 금액
 - ONLY_MEMBER: 회원 전용
