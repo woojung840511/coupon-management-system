@@ -1,6 +1,5 @@
 package com.openplan.coupon.entity;
 
-import com.openplan.coupon.entity.couponInfo.CouponInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

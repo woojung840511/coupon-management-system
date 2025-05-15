@@ -1,4 +1,4 @@
-package com.openplan.coupon.entity.couponInfo;
+package com.openplan.coupon.entity;
 
 import com.openplan.coupon.enums.ConditionType;
 import jakarta.persistence.Column;
