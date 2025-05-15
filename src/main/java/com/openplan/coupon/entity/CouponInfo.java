@@ -5,6 +5,7 @@ import com.openplan.coupon.enums.CouponPublishType;
 import com.openplan.coupon.enums.CouponType;
 import com.openplan.coupon.enums.PurposeType;
 import com.openplan.coupon.enums.TargetType;
+import com.openplan.coupon.exception.ResourceNotFoundException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -95,5 +96,12 @@ public class CouponInfo {
     public void removeCondition(CouponCondition condition) {
         conditions.remove(condition);
         condition.setCouponInfo(null);
+    }
+
+    public CouponCondition getCouponCondition(Long conditionId) {
+        return conditions.stream()
+            .filter(condition -> condition.getCouponConditionSeq().equals(conditionId))
+            .findFirst()
+            .orElseThrow(() -> new ResourceNotFoundException("CouponCondition", "id", conditionId));
     }
 }
