@@ -63,12 +63,12 @@ public class CouponInfo {
     private String couponImageUrl;
 
     @Column(nullable = false)
-    private Integer pressCount;
+    private Integer pressCount;     // 쿠폰 발행 숫자
 
     @Column(nullable = false)
-    private Integer useCount;
+    private Integer useCount;       // 쿠폰 사용 숫자
 
-    private Integer limitCount;
+    private Integer limitCount;     // 쿠폰 사용 제한 숫자
 
     @Column(nullable = false)
     private Boolean isAble;
