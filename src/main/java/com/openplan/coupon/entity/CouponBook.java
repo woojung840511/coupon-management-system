@@ -9,19 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class CouponBook {
 
     @Id
@@ -40,4 +34,15 @@ public class CouponBook {
 
     private LocalDateTime expireAt;
 
+    public CouponBook(CouponInfo couponInfo, String couponCode) {
+
+        if (! couponInfo.isCouponCodePublishable()) {
+            throw new IllegalArgumentException("쿠폰코드 발급이 불가능한 쿠폰정보입니다.");
+        }
+
+        this.couponInfo = couponInfo;
+        this.couponCode = couponCode;
+        this.isUsed = false;
+        this.expireAt = couponInfo.getCouponEndAt();
+    }
 }
