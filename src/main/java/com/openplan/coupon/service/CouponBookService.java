@@ -4,6 +4,7 @@ import com.openplan.coupon.dto.CouponBookCreateRequest;
 import com.openplan.coupon.dto.CouponBookResponse;
 import com.openplan.coupon.entity.CouponBook;
 import com.openplan.coupon.entity.CouponInfo;
+import com.openplan.coupon.entity.CouponLog;
 import com.openplan.coupon.enums.CouponPublishType;
 import com.openplan.coupon.exception.BusinessRuleException;
 import com.openplan.coupon.exception.ResourceNotFoundException;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponBookService {
 
     private final CouponInfoService couponInfoService;
+    private final CouponLogService couponLogService;
     private final CouponBookRepository couponBookRepository;
     // todo codeGenerator 추가
 
@@ -41,9 +43,9 @@ public class CouponBookService {
          */
         List<CouponBook> couponBooks;
         if (couponInfo.getCouponPublishType() == CouponPublishType.UNI) {
-            couponBooks = createUniTypeCouponBooks(couponInfo, request.getFixedCouponCode());
+            couponBooks = createUniTypeCouponBooksAndLog(couponInfo, request);
         } else {
-            couponBooks = createPolyTypeCouponBooks(couponInfo);
+            couponBooks = createPolyTypeCouponBooksAndLog(couponInfo, request);
         }
 
         // 생성된 쿠폰북 저장
@@ -61,7 +63,10 @@ public class CouponBookService {
         }
     }
 
-    private List<CouponBook> createUniTypeCouponBooks(CouponInfo couponInfo, String fixedCouponCode) {
+    private List<CouponBook> createUniTypeCouponBooksAndLog(CouponInfo couponInfo, CouponBookCreateRequest request) {
+        String fixedCouponCode = request.getFixedCouponCode();
+        String adminId = request.getAdminId();
+
         if (fixedCouponCode == null) {
             throw new BusinessRuleException("고정 코드(UNI) 쿠폰은 쿠폰 코드가 필수입니다.");
         }
@@ -71,10 +76,15 @@ public class CouponBookService {
         }
 
         CouponBook couponBook = new CouponBook(couponInfo, fixedCouponCode);
+
+        couponLogService.createCouponLog(
+            CouponLog.ofPublish(fixedCouponCode, adminId, null)
+        );
+
         return Collections.singletonList(couponBook);
     }
 
-    private List<CouponBook> createPolyTypeCouponBooks(CouponInfo couponInfo) {
+    private List<CouponBook> createPolyTypeCouponBooksAndLog(CouponInfo couponInfo, CouponBookCreateRequest request) {
         List<CouponBook> couponBooks = new ArrayList<>();
         int pressCount = couponInfo.getPressCount();
 
@@ -82,6 +92,10 @@ public class CouponBookService {
             String randomCode = generatePolyCouponCode();
             CouponBook couponBook = new CouponBook(couponInfo, randomCode);
             couponBooks.add(couponBook);
+
+            couponLogService.createCouponLog(
+                CouponLog.ofPublish(randomCode, request.getAdminId(), null)
+            );
         }
 
         return couponBooks;

@@ -16,6 +16,9 @@ public class PersonalCouponCreateRequest {
     @NotBlank(message = "사용자 ID는 필수입니다")
     private String personId;
 
+    @NotBlank(message = "관리자 ID는 필수입니다")
+    private String adminId;
+
     @NotBlank(message = "쿠폰 코드는 필수입니다")
     private String couponCode;
 

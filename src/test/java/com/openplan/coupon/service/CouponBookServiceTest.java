@@ -88,6 +88,7 @@ class CouponBookServiceTest {
         CouponBookCreateRequest request = CouponBookCreateRequest.builder()
             .couponInfoSeq(uniTypeCouponInfo.getCouponInfoSeq())
             .fixedCouponCode("CODE123")
+            .adminId("admin")
             .build();
 
         // When
@@ -104,6 +105,7 @@ class CouponBookServiceTest {
         // Given
         CouponBookCreateRequest request = CouponBookCreateRequest.builder()
             .couponInfoSeq(polyTypeCouponInfo.getCouponInfoSeq())
+            .adminId("admin")
             .build();
 
         // When
@@ -121,6 +123,7 @@ class CouponBookServiceTest {
         CouponBookCreateRequest request = CouponBookCreateRequest.builder()
             .couponInfoSeq(uniTypeCouponInfo.getCouponInfoSeq())
             .fixedCouponCode("INTEGRATION123")
+            .adminId("admin")
             .build();
 
         // 첫 번째 생성

@@ -1,5 +1,6 @@
 package com.openplan.coupon.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,9 @@ import lombok.NoArgsConstructor;
 public class CouponBookCreateRequest {
     @NotNull(message = "쿠폰 정보 번호는 필수입니다")
     private Long couponInfoSeq;
+
+    @NotBlank(message = "발행자 ID는 필수입니다")
+    private String adminId;
 
     // UNI 타입일 경우 필수 // todo 생성요청 dto를 구분해야할지 고민
     private String fixedCouponCode;

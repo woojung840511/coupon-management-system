@@ -98,6 +98,10 @@ public class PersonalCouponService {
             couponBookService.saveCouponBook(couponBook);
         }
 
+        // 8. 발급 로그 기록
+        couponLogService.createCouponLog(
+            CouponLog.ofTransfer(couponCode, request.getAdminId(), null));
+
         PersonalCoupon personalCoupon = PersonalCoupon.create(personId, couponCode);
         PersonalCoupon savedPersonalCoupon = personalCouponRepository.save(personalCoupon);
 
@@ -167,11 +171,7 @@ public class PersonalCouponService {
         couponInfo.setUseCount(couponInfo.getUseCount() + 1);
 
         // 4. 쿠폰 사용 로그 생성
-        couponLogService.createCouponLog(CouponLog.builder()
-            .couponCode(couponCode)
-            .personId(personalCoupon.getPersonId())
-            .logType(LogType.USE)
-            .logDesc(request.getUseData())
-            .build());
+        couponLogService.createCouponLog(
+            CouponLog.ofUsage(couponCode, personalCoupon.getPersonId(), request.getUseData()));
     }
 }

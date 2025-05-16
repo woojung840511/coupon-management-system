@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(access = lombok.AccessLevel.PROTECTED)
 public class CouponLog {
 
     @Id
@@ -38,5 +38,33 @@ public class CouponLog {
 
     @Column(columnDefinition = "TEXT")
     private String logDesc;
+
+
+    public static CouponLog ofPublish(String couponCode, String adminId, String logDesc) {
+        return CouponLog.builder()
+            .couponCode(couponCode)
+            .personId(adminId) // CouponBook 발행자 ID
+            .logType(LogType.PUBLISH)
+            .logDesc(logDesc)
+            .build();
+    }
+
+    public static CouponLog ofTransfer(String couponCode, String adminId, String logDesc) {
+        return CouponLog.builder()
+            .couponCode(couponCode)
+            .personId(adminId) // PersonalCoupon 전송자 ID
+            .logType(LogType.TRANS)
+            .logDesc(logDesc)
+            .build();
+    }
+
+    public static CouponLog ofUsage(String couponCode, String userId, String logDesc) {
+        return CouponLog.builder()
+            .couponCode(couponCode)
+            .personId(userId) // 사용자 ID
+            .logType(LogType.USE)
+            .logDesc(logDesc)
+            .build();
+    }
 
 }
