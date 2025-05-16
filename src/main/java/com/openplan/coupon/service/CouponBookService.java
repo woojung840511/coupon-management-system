@@ -6,6 +6,7 @@ import com.openplan.coupon.entity.CouponBook;
 import com.openplan.coupon.entity.CouponInfo;
 import com.openplan.coupon.enums.CouponPublishType;
 import com.openplan.coupon.exception.BusinessRuleException;
+import com.openplan.coupon.exception.ResourceNotFoundException;
 import com.openplan.coupon.repository.CouponBookRepository;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,5 +101,14 @@ public class CouponBookService {
         } while (isExistingCode);
 
         return randomCode;
+    }
+
+    public CouponBook getCouponBookEntity(String couponCode) {
+        return couponBookRepository.findByCouponCode(couponCode)
+            .orElseThrow(() -> new ResourceNotFoundException("CouponBook", "couponCode", couponCode));
+    }
+
+    public void saveCouponBook(CouponBook couponBook) {
+        couponBookRepository.save(couponBook);
     }
 }

@@ -33,8 +33,11 @@ import lombok.Setter;
 public class CouponInfo {
 
     /**
-     * 쿠폰북 발행 방식 결정 요소 - 코드 발급 방식 : couponPublishType - UNI("고정 코드") : 쿠폰북 생성 시 발급된 쿠폰코드가 고정됨. 파라미터로 받아야함<- 쿠폰북CreateRequest(String code) 필요 - POLY("임의 코드") : 쿠폰북 생성 시 발급된 쿠폰코드가 임의로 발급됨 - 쿠폰북 발급 개수 :
-     * pressCount
+     * 쿠폰북 발행 방식 결정 요소
+     * - 코드 발급 방식 : couponPublishType
+     *      - UNI("고정 코드") : 쿠폰북 생성 시 발급된 쿠폰코드가 고정됨. 파라미터로 받아야함<- 쿠폰북CreateRequest(String code) 필요
+     *      - POLY("임의 코드") : 쿠폰북 생성 시 발급된 쿠폰코드가 임의로 발급됨
+     * - 쿠폰북 발급 개수 : pressCount
      */
 
     @Id
@@ -43,7 +46,7 @@ public class CouponInfo {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CouponType couponType;      // 1회(limitCount 1), 다회(limitCount 무시), 제한(limitCount N) ?
+    private CouponType couponType;                      // 1회(limitCount 1), 다회(limitCount 무시), 제한(limitCount N) ?
 
     @Column(nullable = false)
     private String couponName;
@@ -54,7 +57,7 @@ public class CouponInfo {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CouponPublishType couponPublishType;        // UNI("고정 코드"), POLY("임의 코드") {{ 쿠폰북 생성에 관여 }}
+    private CouponPublishType couponPublishType;        // UNI("고정 코드"), POLY("임의 코드")
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -68,7 +71,7 @@ public class CouponInfo {
     private String couponImageUrl;
 
     @Column(nullable = false)
-    private Integer pressCount;                         // 쿠폰 발행 숫자 {{ 쿠폰북 생성에 관여 }}
+    private Integer pressCount;                         // 쿠폰 발행 숫자
 
     @Column(nullable = false)
     private Integer useCount;                           // 쿠폰 사용 숫자 -> 로그성
@@ -81,7 +84,7 @@ public class CouponInfo {
 
     @Column(nullable = false)
     private Boolean isDuplicate;                        // 중복 사용 가능 여부
-    // 해석 : 사용자가 같은 종류 (기준: couponInfoSeq) 쿠폰을 여러 번 사용할 수 있는지 여부
+    // 해석 : 동일 사용자가 같은 종류 (기준: couponInfoSeq) 쿠폰을 여러 번 사용할 수 있는지 여부
 
     @Column(nullable = false)
     private LocalDateTime couponStartAt;                // 쿠폰 적용 시작 일시

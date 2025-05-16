@@ -45,4 +45,11 @@ public class CouponBook {
         this.isUsed = false;
         this.expireAt = couponInfo.getCouponEndAt();
     }
+
+    public void use() {
+        if (isUsed) {
+            throw new IllegalStateException("이미 사용된 쿠폰입니다.");
+        }
+        this.isUsed = true;
+    }
 }

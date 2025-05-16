@@ -15,9 +15,9 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@Builder(access = lombok.AccessLevel.PROTECTED)
 public class PersonalCoupon {
 
     @Id
@@ -42,6 +42,13 @@ public class PersonalCoupon {
         if (personCouponId == null) {
             personCouponId = UUID.randomUUID().toString();
         }
+    }
+
+    public static PersonalCoupon create(String personId, String couponCode) {
+        return PersonalCoupon.builder()
+            .personId(personId)
+            .couponCode(couponCode)
+            .build();
     }
 
 }
