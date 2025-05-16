@@ -128,8 +128,7 @@ class CouponBookServiceTest {
 
         // Then
         // 두 번째 생성 시도 시 예외 발생 확인
-        assertThrows(BusinessRuleException.class, () -> {
-            couponBookService.createCouponBooks(request);
-        });
+        assertThrows(BusinessRuleException.class, () ->
+            couponBookService.createCouponBooks(request));
     }
 }
