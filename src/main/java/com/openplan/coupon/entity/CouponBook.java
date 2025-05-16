@@ -30,7 +30,7 @@ public class CouponBook {
     private String couponCode;
 
     @Column(nullable = false)
-    private Boolean isUsed;
+    private Boolean isUsed;  // PersonalCoupon 발행에 대한 사용 여부로 해석함 (사용자의 사용이 아님)
 
     private LocalDateTime expireAt;
 

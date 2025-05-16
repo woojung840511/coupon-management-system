@@ -2,11 +2,18 @@ package com.openplan.coupon.service;
 
 import com.openplan.coupon.dto.PersonalCouponCreateRequest;
 import com.openplan.coupon.dto.PersonalCouponResponse;
+import com.openplan.coupon.dto.PersonalCouponUseRequest;
 import com.openplan.coupon.entity.CouponBook;
 import com.openplan.coupon.entity.CouponInfo;
+import com.openplan.coupon.entity.CouponLog;
+import com.openplan.coupon.entity.InsuranceContract;
 import com.openplan.coupon.entity.Person;
 import com.openplan.coupon.entity.PersonalCoupon;
+import com.openplan.coupon.enums.ContractStatus;
 import com.openplan.coupon.enums.CouponPublishType;
+import com.openplan.coupon.enums.CouponType;
+import com.openplan.coupon.enums.LogType;
+import com.openplan.coupon.exception.ResourceNotFoundException;
 import com.openplan.coupon.repository.PersonalCouponRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +27,10 @@ public class PersonalCouponService {
 
     private final CouponBookService couponBookService;
     private final PersonService personService;
+    private final CouponLogService couponLogService;
+    private final InsuranceService insuranceService;
     private final PersonalCouponRepository personalCouponRepository;
+
 
     // todo 리펙토링
     public PersonalCouponResponse createPersonalCoupon(PersonalCouponCreateRequest request) {
@@ -94,5 +104,74 @@ public class PersonalCouponService {
         return PersonalCouponResponse.fromEntity(savedPersonalCoupon);
     }
 
+    public PersonalCoupon getPersonalCouponEntity(String personCouponId) {
+        return personalCouponRepository.findById(personCouponId)
+            .orElseThrow(() -> new ResourceNotFoundException("PersonalCoupon", "personCouponId", personCouponId));
+    }
 
+    // todo 리펙토링
+    public void usePersonalCoupon(String personCouponId, PersonalCouponUseRequest request) {
+
+        String contractId = request.getInsuranceSubscriptionDetailsId();
+
+        // 1. 쿠폰 사용 여부 확인
+        PersonalCoupon personalCoupon = getPersonalCouponEntity(personCouponId);
+        String couponCode = personalCoupon.getCouponCode();
+        CouponBook couponBook = couponBookService.getCouponBookEntity(couponCode);
+        CouponInfo couponInfo = couponBook.getCouponInfo();
+
+        // 1.1 기본 활성화 검증
+        Boolean isAble = couponInfo.getIsAble();
+        if (!isAble) {
+            throw new IllegalStateException("쿠폰 사용 불가능한 상태입니다.");
+        }
+
+        // 1.2 쿠폰 사용 가능 기간 검증
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(couponInfo.getCouponStartAt()) || now.isAfter(couponInfo.getCouponEndAt())) {
+            throw new IllegalStateException("쿠폰 사용 가능 기간이 아닙니다.");
+        }
+
+        // 1.3 쿠폰 사용 가능 개수 검증
+        long usedCount = couponLogService.getCouponLogCount(couponCode, personalCoupon.getPersonId(), LogType.USE);
+        CouponType couponType = couponInfo.getCouponType();
+        switch (couponType) {
+            case ONCE:
+                if (usedCount > 0) {
+                    throw new IllegalStateException("이미 사용된 쿠폰입니다.");
+                }
+                break;
+            case LIMIT:
+                if (couponInfo.getLimitCount() <= usedCount) {
+                    throw new IllegalStateException("쿠폰 사용 가능 개수를 다 소진했습니다.");
+                }
+                break;
+            case MULTI:
+                break;
+        }
+
+        // 1.4 보험계약 존재 및 활성화 여부 확인
+        InsuranceContract insuranceContract = insuranceService.getInsuranceContractEntity(contractId);
+        if (insuranceContract.getStatus() != ContractStatus.ACTIVE) {
+            throw new IllegalStateException("보험계약이 활성화 상태가 아닙니다.");
+        }
+
+        // 1.5 CouponCondition 검증 // todo
+
+        // 2. 쿠폰 사용 처리
+        personalCoupon.setUseAt(LocalDateTime.now());
+        personalCoupon.setInsuranceSubscriptionDetailsId(contractId);
+        personalCoupon.setUseData(request.getUseData());
+
+        // 3. 쿠폰 정보 업데이트
+        couponInfo.setUseCount(couponInfo.getUseCount() + 1);
+
+        // 4. 쿠폰 사용 로그 생성
+        couponLogService.createCouponLog(CouponLog.builder()
+            .couponCode(couponCode)
+            .personId(personalCoupon.getPersonId())
+            .logType(LogType.USE)
+            .logDesc(request.getUseData())
+            .build());
+    }
 }

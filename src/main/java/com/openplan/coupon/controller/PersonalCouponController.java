@@ -2,12 +2,14 @@ package com.openplan.coupon.controller;
 
 import com.openplan.coupon.dto.PersonalCouponCreateRequest;
 import com.openplan.coupon.dto.PersonalCouponResponse;
+import com.openplan.coupon.dto.PersonalCouponUseRequest;
 import com.openplan.coupon.service.PersonalCouponService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +38,14 @@ public class PersonalCouponController {
             .status(HttpStatus.CREATED)
             .location(URI.create(location))
             .body(response);
+    }
+
+    @PostMapping("/{personCouponId}/use")
+    public ResponseEntity<Void> usePersonalCoupon(
+        @PathVariable(value = "personCouponId") String personCouponId,
+        @Valid @RequestBody PersonalCouponUseRequest personalCouponUseRequest
+    ) {
+        personalCouponService.usePersonalCoupon(personCouponId, personalCouponUseRequest);
+        return ResponseEntity.ok().build();
     }
 }

@@ -30,7 +30,7 @@ public class PersonalCoupon {
     @Column(nullable = false)
     private String couponCode;
 
-    private LocalDateTime useAt;
+    private LocalDateTime useAt; // 사용 일시
 
     private String insuranceSubscriptionDetailsId; // 보험 계약 정보 UUID
 
