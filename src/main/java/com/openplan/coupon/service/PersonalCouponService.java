@@ -16,6 +16,7 @@ import com.openplan.coupon.enums.LogType;
 import com.openplan.coupon.exception.ResourceNotFoundException;
 import com.openplan.coupon.repository.PersonalCouponRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -173,5 +174,13 @@ public class PersonalCouponService {
         // 4. 쿠폰 사용 로그 생성
         couponLogService.createCouponLog(
             CouponLog.ofUsage(couponCode, personalCoupon.getPersonId(), request.getUseData()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<PersonalCouponResponse> getPersonalCoupons(String personId) {
+        List<PersonalCoupon> personalCoupons = personalCouponRepository.findByPersonId(personId);
+        return personalCoupons.stream()
+            .map(PersonalCouponResponse::fromEntity)
+            .toList();
     }
 }

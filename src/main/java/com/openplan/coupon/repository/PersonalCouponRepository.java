@@ -1,6 +1,7 @@
 package com.openplan.coupon.repository;
 
 import com.openplan.coupon.entity.PersonalCoupon;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,5 +22,7 @@ public interface PersonalCouponRepository extends JpaRepository<PersonalCoupon, 
         @Param("personId") String personId,
         @Param("couponInfoSeq") Long couponInfoSeq
     );
+
+    List<PersonalCoupon> findByPersonId(String personId);
 }
 
