@@ -10,9 +10,11 @@ import com.openplan.coupon.enums.LogType;
 import com.openplan.coupon.exception.ResourceNotFoundException;
 import com.openplan.coupon.repository.CouponBookRepository;
 import com.openplan.coupon.repository.CouponLogRepository;
+import com.openplan.coupon.repository.PersonRepository;
 import com.openplan.coupon.repository.PersonalCouponRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class CouponLogService {
 //    private final PersonalCouponService personalCouponService;
     private final CouponBookRepository couponBookRepository;
     private final PersonalCouponRepository personalCouponRepository;
+    private final PersonRepository personRepository;
 
     public long getCouponLogCount(String couponCode, String personId, LogType logType) {
         return couponLogRepository.countByCouponCodeAndPersonIdAndLogType(couponCode, personId, logType);
@@ -65,12 +68,8 @@ public class CouponLogService {
 
             if (transferLog != null) {
                 issuerId = transferLog.getPersonId();
-                try {
-                    Person issuer = personService.getPersonEntity(issuerId);
-                    issuerName = issuer.getName();
-                } catch (ResourceNotFoundException e) {
-                    issuerName = "관리자";
-                }
+                Optional<Person> issuerOpt = personRepository.findById(issuerId);
+                issuerName = issuerOpt.map(Person::getName).orElse("관리자");
             }
 
             // 응답 생성
