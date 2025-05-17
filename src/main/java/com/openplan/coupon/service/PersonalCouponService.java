@@ -260,4 +260,11 @@ public class PersonalCouponService {
             return true;
         }
     }
+
+    public List<PersonalCouponResponse> getPersonalCoupons(String personId) {
+        return personalCouponRepository.findByPersonId(personId)
+            .stream()
+            .map(PersonalCouponResponse::fromEntity)
+            .collect(Collectors.toList());
+    }
 }
