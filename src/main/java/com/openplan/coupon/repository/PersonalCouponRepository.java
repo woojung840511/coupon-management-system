@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PersonalCouponRepository extends JpaRepository<PersonalCoupon, String> {
+public interface PersonalCouponRepository extends JpaRepository<PersonalCoupon, String>, PersonalCouponRepositoryCustom {
 
     int countByCouponCode(String couponCode);
 

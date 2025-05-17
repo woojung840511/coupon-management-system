@@ -1,8 +1,10 @@
 package com.openplan.coupon.controller;
 
+import com.openplan.coupon.dto.CouponFilterRequest;
 import com.openplan.coupon.dto.PersonalCouponCreateRequest;
 import com.openplan.coupon.dto.PersonalCouponResponse;
 import com.openplan.coupon.dto.PersonalCouponUseRequest;
+import com.openplan.coupon.dto.UserCouponDetailResponse;
 import com.openplan.coupon.service.PersonalCouponService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -10,7 +12,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,11 +52,17 @@ public class PersonalCouponController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<PersonalCouponResponse>> getPersonalCoupon(
-        @PathVariable(value = "personId") String personId
+    @PostMapping("/user/{personId}/search")
+    public ResponseEntity<List<UserCouponDetailResponse>> searchUserCoupons(
+        @PathVariable(value = "personId") String personId,
+        @RequestBody(required = false) CouponFilterRequest filter
     ) {
-        List<PersonalCouponResponse> response = personalCouponService.getPersonalCoupons(personId);
-        return ResponseEntity.ok(response);
+        if (filter == null) {
+            filter = new CouponFilterRequest();
+        }
+
+        List<UserCouponDetailResponse> filteredCoupons =
+            personalCouponService.searchUserCoupons(personId, filter);
+        return ResponseEntity.ok(filteredCoupons);
     }
 }

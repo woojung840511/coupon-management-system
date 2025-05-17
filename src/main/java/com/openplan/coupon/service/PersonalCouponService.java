@@ -1,8 +1,11 @@
 package com.openplan.coupon.service;
 
+import com.openplan.coupon.dto.CouponConditionResponse;
+import com.openplan.coupon.dto.CouponFilterRequest;
 import com.openplan.coupon.dto.PersonalCouponCreateRequest;
 import com.openplan.coupon.dto.PersonalCouponResponse;
 import com.openplan.coupon.dto.PersonalCouponUseRequest;
+import com.openplan.coupon.dto.UserCouponDetailResponse;
 import com.openplan.coupon.entity.CouponBook;
 import com.openplan.coupon.entity.CouponInfo;
 import com.openplan.coupon.entity.CouponLog;
@@ -17,6 +20,7 @@ import com.openplan.coupon.exception.ResourceNotFoundException;
 import com.openplan.coupon.repository.PersonalCouponRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -176,11 +180,84 @@ public class PersonalCouponService {
             CouponLog.ofUsage(couponCode, personalCoupon.getPersonId(), request.getUseData()));
     }
 
+
     @Transactional(readOnly = true)
-    public List<PersonalCouponResponse> getPersonalCoupons(String personId) {
-        List<PersonalCoupon> personalCoupons = personalCouponRepository.findByPersonId(personId);
+    public List<UserCouponDetailResponse> searchUserCoupons(String personId, CouponFilterRequest filter) {
+
+        // 기본 필터 적용해서 조회
+        List<PersonalCoupon> personalCoupons = personalCouponRepository.findByPersonIdWithFilters(personId, filter);
+        LocalDateTime now = LocalDateTime.now();
+
+        CouponFilterRequest finalFilter = filter;
         return personalCoupons.stream()
-            .map(PersonalCouponResponse::fromEntity)
-            .toList();
+            .map(personalCoupon -> {
+                String couponCode = personalCoupon.getCouponCode();
+                CouponBook couponBook = couponBookService.getCouponBookEntity(couponCode);
+                CouponInfo couponInfo = couponBook.getCouponInfo();
+
+                int usedCount = (int) couponLogService.getCouponLogCount(couponCode, personId, LogType.USE);
+                Integer limitCount = couponInfo.getLimitCount();
+                Integer remainingCount = null;
+                if (limitCount != null) {
+                    remainingCount = Math.max(0, limitCount - usedCount);
+                }
+
+                boolean isExpired = now.isAfter(couponBook.getExpireAt());
+                boolean isAvailable = calculateAvailability(
+                    personalCoupon, couponInfo, isExpired, remainingCount);
+
+                List<CouponConditionResponse> conditions = couponInfo.getConditions().stream()
+                    .map(CouponConditionResponse::fromEntity)
+                    .toList();
+
+                return UserCouponDetailResponse.builder()
+                    .personCouponId(personalCoupon.getPersonCouponId())
+                    .couponCode(couponCode)
+                    .couponName(couponInfo.getCouponName())
+
+                    .couponType(couponInfo.getCouponType())
+                    .couponTypeDesc(couponInfo.getCouponType().getDescription())
+                    .purposeType(couponInfo.getPurposeType())
+                    .purposeTypeDesc(couponInfo.getPurposeType().getDescription())
+                    .purposeValue(couponInfo.getPurposeValue())
+                    .badgeType(couponInfo.getCouponBadgeType())
+                    .couponImageUrl(couponInfo.getCouponImageUrl())
+
+                    .isUsed(personalCoupon.getUseAt() != null)
+                    .useAt(personalCoupon.getUseAt())
+                    .expireAt(couponBook.getExpireAt())
+                    .isExpired(isExpired)
+                    .isAvailable(isAvailable)
+
+                    .usedCount(usedCount)
+                    .limitCount(limitCount)
+                    .remainingCount(remainingCount)
+
+                    .conditions(conditions)
+                    .insuranceSubscriptionDetailsId(personalCoupon.getInsuranceSubscriptionDetailsId())
+                    .useData(personalCoupon.getUseData())
+                    .build();
+            })
+            .filter(dto -> finalFilter.getAvailable() == null || dto.isAvailable() == finalFilter.getAvailable())
+            .collect(Collectors.toList());
+    }
+
+    private boolean calculateAvailability (
+        PersonalCoupon personalCoupon, CouponInfo couponInfo, boolean isExpired, Integer remainingCount ) {
+
+        if (isExpired || !couponInfo.getIsAble()) {
+            return false;
+        }
+
+        if (personalCoupon.getUseAt() != null) {
+            return switch (couponInfo.getCouponType()) {
+                case ONCE -> false;
+                case LIMIT -> remainingCount != null && remainingCount > 0;
+                case MULTI -> true;
+            };
+
+        } else {
+            return true;
+        }
     }
 }
