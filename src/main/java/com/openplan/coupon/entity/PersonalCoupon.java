@@ -51,4 +51,10 @@ public class PersonalCoupon {
             .build();
     }
 
+    public void use(String insuranceSubscriptionDetailsId, String useData) {
+        this.useAt = LocalDateTime.now();
+        this.insuranceSubscriptionDetailsId = insuranceSubscriptionDetailsId;
+        this.useData = useData;
+    }
+
 }

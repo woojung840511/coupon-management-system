@@ -16,6 +16,7 @@ import com.openplan.coupon.entity.InsuranceContract;
 import com.openplan.coupon.entity.Person;
 import com.openplan.coupon.enums.CouponPublishType;
 import com.openplan.coupon.enums.CouponType;
+import com.openplan.coupon.exception.BusinessRuleException;
 import com.openplan.coupon.repository.CouponBookRepository;
 import com.openplan.coupon.repository.CouponInfoRepository;
 import com.openplan.coupon.repository.InsuranceContractRepository;
@@ -202,7 +203,7 @@ public class CouponIssuanceFlowIntegrationTest {
         personalCouponService.usePersonalCoupon(personalResponse.getPersonCouponId(), useRequest);
         personalCouponService.usePersonalCoupon(personalResponse.getPersonCouponId(), useRequest);
 
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(BusinessRuleException.class, () ->
             personalCouponService.usePersonalCoupon(personalResponse.getPersonCouponId(), useRequest)
         );
     }

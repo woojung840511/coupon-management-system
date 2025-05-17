@@ -13,6 +13,7 @@ import com.openplan.coupon.dto.PersonalCouponResponse;
 import com.openplan.coupon.dto.PersonalCouponUseRequest;
 import com.openplan.coupon.entity.InsuranceContract;
 import com.openplan.coupon.entity.Person;
+import com.openplan.coupon.exception.BusinessRuleException;
 import com.openplan.coupon.repository.InsuranceContractRepository;
 import com.openplan.coupon.repository.PersonRepository;
 import com.openplan.coupon.repository.PersonalCouponRepository;
@@ -125,7 +126,7 @@ class PersonalCouponServiceTest {
 
         // When & Then
         // 쿠폰 두 번째 사용 시도 -> 예외 발생해야 함
-        assertThrows(IllegalStateException.class, () -> {
+        assertThrows(BusinessRuleException.class, () -> {
             personalCouponService.usePersonalCoupon(createResponse.getPersonCouponId(), useRequest);
         });
     }

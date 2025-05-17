@@ -143,4 +143,17 @@ public class CouponInfo {
 
         return isAble && hasRequiredFields && isValidEndDate && isValidPressCount && isValidDateRange;
     }
+
+    public boolean isActive() {
+        return this.isAble;
+    }
+
+    public boolean isWithinUsagePeriod(LocalDateTime now) {
+        return now.isAfter(this.couponStartAt) && now.isBefore(this.couponEndAt);
+    }
+
+    public void incrementUseCount() {
+        this.useCount += 1;
+    }
+
 }
