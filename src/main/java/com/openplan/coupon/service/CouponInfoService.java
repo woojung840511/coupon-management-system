@@ -110,6 +110,7 @@ public class CouponInfoService {
         couponInfo.addCondition(couponCondition);
 
         couponInfoRepository.save(couponInfo);
+        couponInfoRepository.flush();
 
         return CouponConditionResponse.fromEntity(couponCondition);
     }

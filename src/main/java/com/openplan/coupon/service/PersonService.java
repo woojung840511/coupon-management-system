@@ -14,6 +14,7 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
+    @Transactional(readOnly = true)
     public Person getPersonEntity(String personId) {
         return personRepository.findById(personId)
                 .orElseThrow(() -> new ResourceNotFoundException("Person", "personId", personId));

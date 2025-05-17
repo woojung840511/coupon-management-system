@@ -1,6 +1,7 @@
 package com.openplan.coupon.controller;
 
 import com.openplan.coupon.config.CommonApiResponses;
+import com.openplan.coupon.config.SwaggerExamples;
 import com.openplan.coupon.dto.CouponInfoCreateRequest;
 import com.openplan.coupon.dto.CouponInfoResponse;
 import com.openplan.coupon.dto.CouponInfoUpdateRequest;
@@ -8,6 +9,7 @@ import com.openplan.coupon.service.CouponInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/coupons")
 @RequiredArgsConstructor
-@Tag(name = "쿠폰 정보 API", description = "쿠폰의 기본 정보를 관리하는 API")
+@Tag(name = "쿠폰 정보(CouponInfo) API", description = "쿠폰의 기본 정보를 관리하는 API")
 public class CouponInfoController {
 
     private final CouponInfoService couponInfoService;
@@ -38,6 +40,17 @@ public class CouponInfoController {
     @Operation(
         summary = "쿠폰 정보 생성",
         description = "새로운 쿠폰 정보를 생성합니다. 쿠폰 유형, 이름, 대상 유형, 발행 유형, 용도 등의 정보가 필요합니다."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            examples = {
+                @ExampleObject(
+                    name = "10% 할인 쿠폰",
+                    value = SwaggerExamples.CouponInfoCreateRequest
+                )
+            }
+        )
     )
     @ApiResponse(
         responseCode = "201",
@@ -78,10 +91,22 @@ public class CouponInfoController {
         return ResponseEntity.ok(response);
     }
 
+
     @PatchMapping("/{id}")
     @Operation(
         summary = "쿠폰 정보 수정",
         description = "쿠폰 정보를 부분 수정합니다. 변경하려는 필드만 요청에 포함하면 됩니다."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            examples = {
+                @ExampleObject(
+                    name = "10% -> 20% 할인 쿠폰",
+                    value = SwaggerExamples.CouponInfoUpdateRequest
+                )
+            }
+        )
     )
     @ApiResponse(
         responseCode = "200",
@@ -95,6 +120,7 @@ public class CouponInfoController {
         CouponInfoResponse response = couponInfoService.updateCouponInfo(id, request);
         return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/{id}")
     @Operation(

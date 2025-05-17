@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/coupon-logs")
 @RequiredArgsConstructor
-@Tag(name = "쿠폰 로그 정보 API", description = "쿠폰 로그 정보를 관리하는 API")
+@Tag(name = "쿠폰 로그(CouponLog) 정보 API", description = "쿠폰 로그 정보를 관리하는 API")
 public class CouponLogController {
 
     private final CouponLogService couponLogService;

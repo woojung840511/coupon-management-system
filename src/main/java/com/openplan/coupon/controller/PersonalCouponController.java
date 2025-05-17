@@ -1,6 +1,7 @@
 package com.openplan.coupon.controller;
 
 import com.openplan.coupon.config.CommonApiResponses;
+import com.openplan.coupon.config.SwaggerExamples;
 import com.openplan.coupon.dto.CouponFilterRequest;
 import com.openplan.coupon.dto.PersonalCouponCreateRequest;
 import com.openplan.coupon.dto.PersonalCouponResponse;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +32,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/personal-coupons")
 @RequiredArgsConstructor
-@Tag(name = "사용자 쿠폰 사용 API", description = "사용자에게 쿠폰을 발급하고 쿠폰을 사용하는 API")
+@Tag(name = "사용자 쿠폰(PersonalCoupon) 사용 API", description = "사용자에게 쿠폰을 발급하고 쿠폰을 사용하는 API")
 public class PersonalCouponController {
 
     private final PersonalCouponService personalCouponService;
@@ -38,7 +40,10 @@ public class PersonalCouponController {
     @PostMapping
     @Operation(
         summary = "사용자 쿠폰 발급",
-        description = "쿠폰 코드를 사용자에게 발급합니다. 사용자 ID, 관리자 ID, 쿠폰 코드가 필요합니다."
+        description = "쿠폰 코드를 사용자에게 발급합니다. 사용자 ID, 관리자 ID, 쿠폰 코드가 필요합니다."+
+            "쿠폰 발행 유형(UNI/POLY)에 따라 발급 로직이 다르게 처리됩니다. " +
+            "UNI 타입은 한 코드에 여러 사용자 발급이 가능하며 pressCount로 총 발급 수를 제한합니다. " +
+            "POLY 타입은 각 코드가 단 한 명의 사용자에게만 발급됩니다. "
     )
     @ApiResponse(
         responseCode = "201",
@@ -84,6 +89,17 @@ public class PersonalCouponController {
     @Operation(
         summary = "사용자 쿠폰 목록 조회",
         description = "특정 사용자가 보유한 쿠폰 목록을 조회합니다."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            examples = {
+                @ExampleObject(
+                    name = "최대할인 금액 1000원 -> 2000원 조건",
+                    value = SwaggerExamples.CouponFilterRequest
+                )
+            }
+        )
     )
     @ApiResponse(
         responseCode = "200",

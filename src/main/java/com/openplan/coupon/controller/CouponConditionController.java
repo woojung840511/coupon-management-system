@@ -1,6 +1,7 @@
 package com.openplan.coupon.controller;
 
 import com.openplan.coupon.config.CommonApiResponses;
+import com.openplan.coupon.config.SwaggerExamples;
 import com.openplan.coupon.dto.CouponConditionCreateRequest;
 import com.openplan.coupon.dto.CouponConditionResponse;
 import com.openplan.coupon.dto.CouponConditionUpdateRequest;
@@ -8,6 +9,7 @@ import com.openplan.coupon.service.CouponInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +30,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/coupons/{couponId}/conditions")
 @RequiredArgsConstructor
-@Tag(name = "쿠폰 조건 API", description = "쿠폰에 적용되는 사용 조건을 관리하는 API")
+@Tag(name = "쿠폰 조건(CouponCondition) API", description = "쿠폰에 적용되는 사용 조건을 관리하는 API")
 public class CouponConditionController {
 
     private final CouponInfoService couponInfoService;
@@ -38,6 +40,17 @@ public class CouponConditionController {
         summary = "쿠폰 조건 생성",
         description = "쿠폰에 새로운 사용 조건을 추가합니다."
     )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            examples = {
+                @ExampleObject(
+                    name = "최대할인 금액 1000원 조건",
+                    value = SwaggerExamples.CouponConditionCreateRequest
+                )
+            }
+        )
+    )
     @ApiResponse(
         responseCode = "201",
         description = "조건 생성 성공",
@@ -45,7 +58,7 @@ public class CouponConditionController {
     )
     @CommonApiResponses
     public ResponseEntity<CouponConditionResponse> createCouponCondition(
-        @Parameter(description = "쿠폰 정보 ID") @PathVariable(value = "couponId") Long couponId,
+        @Parameter(description = "쿠폰 정보(CouponInfo) ID") @PathVariable(value = "couponId") Long couponId,
         @Valid @RequestBody CouponConditionCreateRequest couponConditionCreateRequest
     ) {
         CouponConditionResponse response = couponInfoService.addCouponCondition(couponId, couponConditionCreateRequest);
@@ -66,6 +79,17 @@ public class CouponConditionController {
     @Operation(
         summary = "쿠폰 조건 수정",
         description = "쿠폰 조건을 수정합니다."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            examples = {
+                @ExampleObject(
+                    name = "최대할인 금액 1000원 -> 2000원 조건",
+                    value = SwaggerExamples.CouponConditionUpdateRequest
+                )
+            }
+        )
     )
     @ApiResponse(
         responseCode = "200",

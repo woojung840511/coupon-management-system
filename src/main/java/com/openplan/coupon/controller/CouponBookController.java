@@ -1,12 +1,14 @@
 package com.openplan.coupon.controller;
 
 import com.openplan.coupon.config.CommonApiResponses;
+import com.openplan.coupon.config.SwaggerExamples;
 import com.openplan.coupon.dto.CouponBookCreateRequest;
 import com.openplan.coupon.dto.CouponBookResponse;
 import com.openplan.coupon.dto.PersonalCouponResponse;
 import com.openplan.coupon.service.CouponBookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/coupon-books")
 @RequiredArgsConstructor
-@Tag(name = "쿠폰북 발행 API", description = "쿠폰북을 발행하는 API")
+@Tag(name = "쿠폰북(CouponBook) 발행 API", description = "쿠폰북을 발행하는 API")
 public class CouponBookController {
 
     private final CouponBookService couponBookService;
@@ -32,6 +34,17 @@ public class CouponBookController {
     @Operation(
         summary = "쿠폰북 발행",
         description = "쿠폰정보를 기반으로 쿠폰북을 발행합니다."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        content = @Content(
+            mediaType = "application/json",
+            examples = {
+                @ExampleObject(
+                    name = "고정코드가 없는 쿠폰북 발행",
+                    value = SwaggerExamples.CouponBookCreateRequest
+                )
+            }
+        )
     )
     @ApiResponse(
         responseCode = "201",
