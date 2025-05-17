@@ -117,7 +117,6 @@ public class PersonalCouponService {
         }
     }
 
-    // todo 리펙토링
     public void usePersonalCoupon(String personCouponId, PersonalCouponUseRequest request) {
 
         String contractId = request.getInsuranceSubscriptionDetailsId();
