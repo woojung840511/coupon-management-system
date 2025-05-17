@@ -1,186 +1,171 @@
-# backend_apply_woojung840511
-Backend Apply Test
+# 🎟️ 쿠폰 관리 시스템
 
-# 쿠폰 관리 시스템
+쿠폰 발급, 사용, 조건 관리 등을 포함하는 백엔드 시스템입니다. 사용자(B2B/B2C)에게 쿠폰을 발급하고, 사용 이력을 관리하며, 보험 계약 정보와 연계하여 할인 혜택을 적용할 수 있습니다.
 
-## 프로젝트 개요
-이 프로젝트는 쿠폰의 발급, 사용, 조건 관리 등을 포함하는 백엔드 시스템입니다.
+## 📋 프로젝트 개요
 
-## 개발 환경
-- Java 17
-- Spring Boot 3.4.5
-- H2 Database
-- Gradle 8.13
+이 프로젝트는 마케팅 활동을 지원하기 위한 쿠폰 관리 시스템으로, 다양한 종류의 쿠폰을 유연하게 관리하고 사용할 수 있는 백엔드 API를 제공합니다.
 
-## 기능 요약
+### 주요 기능
 - 쿠폰 정보 관리 (CRUD)
 - 쿠폰 발급 및 사용
 - 쿠폰 조건 관리
 - 쿠폰 사용 이력 및 보유 현황 조회
-- 사용자 정보 관리
-- 보험 상품 및 계약 정보 관리
+- 보험 상품 및 계약 정보 연동
 
-## API 문서
-API 문서는 Swagger를 통해 확인할 수 있습니다.
-- http://localhost:8080/api/swagger-ui.html
+## 🛠️ 기술 스택
 
-## 과제 요구사항
+- **백엔드**: Java 17, Spring Boot 3.2.5
+- **데이터베이스**: H2 Database (인메모리)
+- **ORM**: Spring Data JPA, Querydsl
+- **API 문서화**: Springdoc OpenAPI (Swagger UI)
+- **빌드 도구**: Gradle
+- **테스트**: JUnit 5, Spring Boot Test
 
-### 배경
-쿠폰 관리 시스템은 고객에게 다양한 혜택을 제공하고, 쿠폰 사용 및 발급 기록을 관리하기 위한 필수적인 기능입니다. 이번 과제는 쿠폰의 발급, 사용, 조건 관리 등을 포함하는 백엔드 시스템을 개발하는 것입니다.
+## 🏗️ 시스템 아키텍처
 
-### 요구 사항
+### 주요 모듈
+- 쿠폰 정보 관리 (CouponInfo)
+- 쿠폰 발행 관리 (CouponBook)
+- 사용자 쿠폰 관리 (PersonalCoupon)
+- 쿠폰 로그 관리 (CouponLog)
+- 사용자 관리 (Person)
+- 보험 상품 및 계약 관리 (InsuranceProduct, InsuranceContract)
 
-#### 쿠폰 정보 관리
-- coupon_info 테이블을 기반으로 쿠폰의 기본 정보(CRUD) API를 구현합니다.
-- 쿠폰의 사용 유형, 발급 유형, 조건 등을 관리할 수 있어야 합니다.
+## 💡 핵심 비즈니스 로직
 
-#### 쿠폰 발급 및 사용
-- 쿠폰을 발급할 수 있는 API를 작성합니다. 이때, 난수 쿠폰 코드는 1인에게만 등록 가능하도록 합니다.
-- 발급 기능 구현시 멤버/상품/기간 에 대한 기능을 우선으로 합니다.
-- 쿠폰 사용 시, coupon_log에 발급자 및 사용자 정보를 기록하는 API를 구현합니다.
+### 쿠폰 발급 프로세스
+1. **쿠폰 정보 생성** (관리자)
+  - 쿠폰 타입, 발행 방식, 사용 조건 등 설정
 
-#### 쿠폰 조건 관리
-- 쿠폰에 걸려 있는 조건을 관리하기 위한 API를 작성합니다. 조건 유형에 따라 적절한 조건을 추가하거나 수정할 수 있어야 합니다.
+2. **쿠폰 코드 발행** (시스템)
+  - UNI 타입: 고정 코드 생성 (동일 코드 여러 사용자에게 발급 가능)
+  - POLY 타입: 임의 코드 생성 (1인 1코드 방식)
 
-#### 쿠폰 사용 이력 및 보유 현황
-- 사용자가 보유하고 있는 쿠폰을 확인할 수 있는 API를 구현합니다.
-- 사용 이력을 기록하고 조회할 수 있는 API를 작성합니다. 이력에는 발급자 및 사용자 정보가 포함되어야 합니다.
+3. **사용자 쿠폰 발급** (관리자 → 사용자)
+  - 특정 사용자에게 쿠폰 발급
+  - 발급 제한 조건 검증 (중복 발급 여부, 발급 가능 시간 등)
 
-#### 사용자 정보 관리
-- person 은 sample 데이터를 생성하여 진행 합니다.
+### 쿠폰 사용 프로세스
+1. **쿠폰 사용 요청** (사용자)
+  - 특정 보험 계약에 쿠폰 적용 요청
 
-#### 보험 상품 및 계약 정보 관리
-- 보험 상품 및 계약 정보를 관리하기 위한 API를 구현합니다. 사용자가 쿠폰을 사용할 때 관련된 보험 계약 정보를 기록할 수 있어야 합니다.
-- 보험 상품 정보는 sample 데이터를 생성하여 진행 합니다.
+2. **쿠폰 사용 검증** (시스템)
+  - 쿠폰 유효성 검증 (사용 가능 시간, 사용 가능 횟수 등)
+  - 쿠폰 사용 조건 검증 (최소 금액, 특정 상품 제한 등)
 
-#### Enum 관리
-- 정의된 Enum 값들을 활용하여 각 API에서 적절한 검증을 수행하도록 합니다.
+3. **쿠폰 사용 처리** (시스템)
+  - 쿠폰 사용 정보 기록
+  - 쿠폰 사용 로그 저장
 
-### 테이블 명세
+## 🔍 주요 개념 및 설계 특징
 
-#### coupon_info
-- coupon_info_seq: 쿠폰 순번
-- coupon_type: 쿠폰의 사용 유형 (ONCE, MULTI, LIMIT)
-- coupon_name: 쿠폰의 명칭
-- target_type: B2B, B2C 서비스 대상 (B2B, B2C, ALL)
-- coupon_publish_type: 쿠폰의 발행 유형 (UNI, POLY)
-- purpose_type: 쿠폰의 용도 (RATE, AMOUNT)
-- purpose_value: 용도의 값
-- coupon_badge_type: 쿠폰에 붙일 배지 유형 (NEW, BEST)
-- coupon_image_url: 쿠폰 이미지 URL
-- press_count: 쿠폰 발행 숫자
-- use_count: 쿠폰 사용 숫자
-- limit_count: 쿠폰 사용 제한 숫자
-- is_able: 사용 여부
-- is_duplicate: 중복 사용 가능 여부
-- coupon_start_at: 쿠폰 적용 시작 일시
-- coupon_end_at: 쿠폰 적용 종료 일시
+### 쿠폰 사용 유형
+- **ONCE**: 1회만 사용 가능한 쿠폰
+- **MULTI**: 여러 번 사용 가능한 쿠폰
+- **LIMIT**: 제한된 횟수만큼 사용 가능한 쿠폰
 
-#### coupon_condition
-- coupon_condition_seq: 조건 순번
-- coupon_info_seq: 쿠폰 정보 순번
-- condition_type: 조건 유형
-- main_value: 주요 값
-- sub_value: 참조 값
-- condition_desc: 조건 설명
+### 쿠폰 발행 유형
+- **UNI**: 고정 코드 방식 (하나의 코드를 여러 사용자에게 발급)
+- **POLY**: 임의 코드 방식 (각 발급마다 고유한 코드 생성)
 
-#### coupon_book
-- coupon_book_seq: 쿠폰 코드 순번
-- coupon_info_seq: 쿠폰 정보 순번
-- coupon_code: 쿠폰 코드 값
-- is_used: 사용 여부
-- expire_at: 사용 종료 일시
+### 쿠폰 조건 관리
+다양한 조건 유형을 지원하여 유연한 쿠폰 정책 설정 가능:
+- 최대 할인 금액
+- 최소 사용 금액
+- 회원 전용
+- 특정 상품 전용
+- 중복 사용 기간 허용
+- 쿠폰 만료 정책
 
-#### personal_coupon
-- person_coupon_id: 사용자의 쿠폰 정보 Guid
-- person_id: 사용자 Guid
-- coupon_code: 보유하거나 사용한 쿠폰 코드
-- use_at: 사용 일시
-- insurance_subscription_details_id: 사용한 보험의 계약 정보
-- use_data: 사용 데이터
+## 📊 주요 API 엔드포인트
 
-#### coupon_log
-- coupon_log_seq: 쿠폰 로그 순번
-- coupon_code: 쿠폰 코드 값
-- person_id: 사용자 값
-- log_type: 로그 유형
-- log_desc: 로그 설명
+### 쿠폰 정보 API
+- `POST /api/coupons`: 쿠폰 정보 생성
+- `GET /api/coupons/{id}`: 쿠폰 정보 조회
+- `PATCH /api/coupons/{id}`: 쿠폰 정보 수정
+- `DELETE /api/coupons/{id}`: 쿠폰 정보 삭제
 
-#### person
-- person_id: 사용자 고유 식별자 (Guid)
-- name: 사용자 이름
-- email: 사용자 이메일
-- phone: 사용자 전화번호
-- created_at: 사용자 등록 일시
-- updated_at: 사용자 정보 수정 일시
+### 쿠폰 조건 API
+- `POST /api/coupons/{couponId}/conditions`: 쿠폰 조건 생성
+- `GET /api/coupons/{couponId}/conditions/{conditionId}`: 쿠폰 조건 조회
+- `PATCH /api/coupons/{couponId}/conditions/{conditionId}`: 쿠폰 조건 수정
+- `DELETE /api/coupons/{couponId}/conditions/{conditionId}`: 쿠폰 조건 삭제
 
-#### insurance_product
-- product_id: 보험 상품 고유 식별자 (Guid)
-- product_name: 보험 상품명
-- premium: 보험료
-- created_at: 상품 등록 일시
-- updated_at: 상품 정보 수정 일시
+### 쿠폰북 API
+- `POST /api/coupon-books`: 쿠폰북 발행
 
-#### insurance_contract
-- contract_id: 계약 고유 식별자 (Guid)
-- person_id: 계약자 (사용자) 식별자
-- product_id: 보험 상품 식별자
-- premium: 보험료
-- contract_start_date: 계약 시작 일시
-- contract_end_date: 계약 종료 일시
-- status: 계약 상태 (예: 활성, 만료, 해지)
-- created_at: 계약 등록 일시
-- updated_at: 계약 정보 수정 일시
+### 사용자 쿠폰 API
+- `POST /api/personal-coupons`: 사용자 쿠폰 발급
+- `POST /api/personal-coupons/{personCouponId}/use`: 쿠폰 사용
+- `POST /api/personal-coupons/user/{personId}/search`: 사용자 쿠폰 검색
 
-### Enum 명세
+### 쿠폰 로그 API
+- `GET /api/coupon-logs/user/{personId}/details`: 사용자별 쿠폰 사용 이력 조회
 
-#### CouponType - 쿠폰 사용 유형
-- ONCE: 1회
-- MULTI: 다회
-- LIMIT: 제한
+## 🧪 테스트 케이스
 
-#### CouponPublishType - 쿠폰의 발행 유형
-- UNI: 고정 코드
-- POLY: 임의 코드
+시스템의 중요한 비즈니스 로직에 대한 테스트 케이스를 구현했습니다:
 
-#### TargetType - 쿠폰 서비스 대상 유형
-- B2B
-- B2C
-- ALL
+- 단위 테스트: 각 서비스 로직 검증
+- 통합 테스트: 쿠폰 발급 및 사용 플로우 검증
 
-#### PurposeType - 쿠폰 용도 유형
-- RATE: 할인율
-- AMOUNT: 차감 비용
+### 주요 테스트 시나리오
+- 쿠폰 정보 생성 및 조회 검증
+- UNI 타입 쿠폰북 생성 검증
+- POLY 타입 쿠폰북 생성 검증
+- 쿠폰 발급 및 사용 전체 플로우 검증
+- 쿠폰 사용 횟수 제한 검증
 
-#### CouponBadgeType - 쿠폰 뱃지 유형
-- NEW
-- BEST
+## 💻 실행 방법
 
-#### ConditionType - 쿠폰 조건 유형
-- MAX_DISCOUNT: 최대 할인 금액
-- MIN_AMOUNT: 최소 사용 금액
-- ONLY_MEMBER: 회원 전용
-- ONLY_PRODUCT: 상품 전용
-- TERM: 중복 사용 기간 허용
-    - 기간 단위: YEAR, MONTH, DAY
-- EXPIRE: 쿠폰 만료 정책
+### 요구사항
+- JDK 17 이상
+- Gradle 8.x
 
-#### LogType
-- PUBLISH: 발행
-- USE: 사용
-- TRANS: 전송
+### 빌드 및 실행
+```bash
+# 프로젝트 클론
+git clone https://github.com/yourgithub/coupon-management-system.git
+cd coupon-management-system
 
-## 기술 스택
-- 프레임워크: Spring Boot (Java)
-- 데이터베이스: H2
+# 빌드
+./gradlew build
 
-## 제출물
-- API 문서: Swagger
-- 코드: GitHub 업로드
+# 실행
+./gradlew bootRun
+```
 
-## 평가 기준
-- 코드의 가독성 및 구조
-- API의 기능 구현 여부
-- API 문서의 완전성과 명확성
-- 테스트 케이스의 포함 여부
+### API 문서 확인
+- Swagger UI: http://localhost:8080/api/swagger-ui.html
+- API Docs: http://localhost:8080/api/api-docs
+
+## 🌟 프로젝트 특징 및 개발 포인트
+
+1. **도메인 주도 설계(DDD) 접근**
+  - 비즈니스 로직을 도메인 계층에 집중
+  - 풍부한 도메인 모델과 비즈니스 규칙
+
+2. **계층형 아키텍처**
+  - 컨트롤러, 서비스, 레포지토리로 명확히 구분된 계층
+  - 각 계층의 역할과 책임 분리
+
+3. **효과적인 예외 처리**
+  - 도메인별 커스텀 예외 클래스
+  - 일관된 에러 응답 포맷
+
+4. **데이터 접근 최적화**
+  - Querydsl을 활용한 동적 쿼리 구현
+  - 복잡한 조회 조건에 대응
+
+5. **Swagger를 활용한 API 문서화**
+  - 자동화된 API 문서 생성
+  - API 테스트 용이성 제공
+
+## 📈 향후 개선 계획
+
+- 사용자 인증 및 권한 관리(Spring Security)
+- 비동기 이벤트 처리(Spring Events)
+- 캐싱 적용(Redis)
+- 클라우드 환경 배포(Docker, Kubernetes)
+- 모니터링 시스템 연동
