@@ -1,8 +1,15 @@
 package com.openplan.coupon.controller;
 
+import com.openplan.coupon.config.CommonApiResponses;
 import com.openplan.coupon.dto.CouponBookCreateRequest;
 import com.openplan.coupon.dto.CouponBookResponse;
+import com.openplan.coupon.dto.PersonalCouponResponse;
 import com.openplan.coupon.service.CouponBookService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/coupon-books")
 @RequiredArgsConstructor
+@Tag(name = "사용자 쿠폰 API", description = "사용자에게 쿠폰을 발급하고 사용하는 API")
 public class CouponBookController {
 
     private final CouponBookService couponBookService;
 
     @PostMapping
+    @Operation(
+        summary = "사용자 쿠폰 발급",
+        description = "쿠폰 코드를 사용자에게 발급합니다."
+    )
+    @ApiResponse(
+        responseCode = "201",
+        description = "쿠폰 발급 성공",
+        content = @Content(schema = @Schema(implementation = PersonalCouponResponse.class))
+    )
+    @CommonApiResponses
     public ResponseEntity<List<CouponBookResponse>> createCouponBooks(
         @Valid @RequestBody CouponBookCreateRequest request) {
         List<CouponBookResponse> couponBooks = couponBookService.createCouponBooks(request);
