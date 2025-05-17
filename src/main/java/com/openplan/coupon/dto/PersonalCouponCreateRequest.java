@@ -1,6 +1,5 @@
 package com.openplan.coupon.dto;
 
-import com.openplan.coupon.entity.PersonalCoupon;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +21,4 @@ public class PersonalCouponCreateRequest {
     @NotBlank(message = "쿠폰 코드는 필수입니다")
     private String couponCode;
 
-    public PersonalCoupon toEntity() {
-        return PersonalCoupon.create(personId, couponCode);
-    }
 }
