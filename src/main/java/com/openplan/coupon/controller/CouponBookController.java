@@ -23,15 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/coupon-books")
 @RequiredArgsConstructor
-@Tag(name = "사용자 쿠폰 API", description = "사용자에게 쿠폰을 발급하고 사용하는 API")
+@Tag(name = "쿠폰북 발행 API", description = "쿠폰북을 발행하는 API")
 public class CouponBookController {
 
     private final CouponBookService couponBookService;
 
     @PostMapping
     @Operation(
-        summary = "사용자 쿠폰 발급",
-        description = "쿠폰 코드를 사용자에게 발급합니다."
+        summary = "쿠폰북 발행",
+        description = "쿠폰정보를 기반으로 쿠폰북을 발행합니다."
     )
     @ApiResponse(
         responseCode = "201",

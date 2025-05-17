@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/personal-coupons")
 @RequiredArgsConstructor
+@Tag(name = "사용자 쿠폰 사용 API", description = "사용자에게 쿠폰을 발급하고 쿠폰을 사용하는 API")
 public class PersonalCouponController {
 
     private final PersonalCouponService personalCouponService;
