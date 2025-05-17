@@ -50,7 +50,7 @@ public final class SwaggerExamples {
     public static final String CouponBookCreateRequest = """
         {
           "couponInfoSeq": 3,
-          "adminId": "admin123",
+          "adminId": "admin123"
         }
         """;
 
